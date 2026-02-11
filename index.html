@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Needham–Schroeder Smooth 3D Animation</title>
+<title>Suppress Replay Attack Protocol</title>
 
 <style>
 body{
@@ -12,122 +12,53 @@ font-family:Segoe UI, sans-serif;
 color:white;
 overflow:hidden;
 }
-
 h1{text-align:center;color:#38bdf8;margin:10px 0}
+.scene{position:relative;width:100vw;height:90vh;perspective:1200px;}
 
-.scene{
-position:relative;
-width:100vw;
-height:90vh;
-perspective:1000px;
-}
-
-/* Nodes */
 .node{
-position:absolute;
-width:140px;height:140px;
-border-radius:50%;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-font-weight:bold;
-box-shadow:0 0 35px rgba(0,255,255,.5);
+position:absolute;width:150px;height:150px;border-radius:50%;
+display:flex;flex-direction:column;justify-content:center;align-items:center;
+font-weight:bold;box-shadow:0 0 40px rgba(0,255,255,.6);
 animation:float 6s infinite ease-in-out;
 }
-
 .node small{font-size:11px;color:#e2e8f0}
 
-#alice{left:5%;top:55%;background:linear-gradient(145deg,#3b82f6,#1e3a8a)}
+#alice{left:5%;top:60%;background:linear-gradient(145deg,#3b82f6,#1e3a8a)}
 #kdc{left:42%;top:5%;background:linear-gradient(145deg,#facc15,#a16207)}
-#bob{right:5%;top:55%;background:linear-gradient(145deg,#22c55e,#14532d)}
+#bob{right:5%;top:60%;background:linear-gradient(145deg,#22c55e,#14532d)}
 
-@keyframes float{
-0%,100%{transform:translateY(0)}
-50%{transform:translateY(-15px)}
-}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
 
-/* Packet */
 .packet{
-position:absolute;
-padding:12px 22px;
-border-radius:30px;
+position:absolute;padding:12px 22px;border-radius:30px;
 background:linear-gradient(145deg,#38bdf8,#0ea5e9);
-font-size:14px;
-white-space:nowrap;
-opacity:0;
-box-shadow:0 0 30px #38bdf8;
-transform:translate(-50%,-50%) scale(1);
-transition:opacity .8s ease;
+font-size:14px;white-space:nowrap;opacity:0;
+box-shadow:0 0 25px #38bdf8;transform:translate(-50%,-50%) scale(1);
 }
 
-/* Explanation bubble */
 .explain{
-position:absolute;
-font-size:13px;
-background:rgba(15,23,42,.95);
-padding:8px 12px;
-border-radius:10px;
-border:1px solid #38bdf8;
-opacity:0;
-white-space:nowrap;
-box-shadow:0 0 20px rgba(56,189,248,.6);
-transition:opacity .8s ease;
+position:absolute;font-size:13px;background:rgba(15,23,42,.95);
+padding:8px 12px;border-radius:10px;border:1px solid #38bdf8;
+opacity:0;white-space:nowrap;box-shadow:0 0 15px rgba(56,189,248,.6);
 }
 
-/* Controls */
-.controls{
-position:fixed;
-top:15px;
-right:20px;
-z-index:1000;
-}
-
+.controls{position:fixed;top:15px;right:20px;z-index:1000}
 button{
-padding:8px 14px;
-margin-left:6px;
-border:none;
-border-radius:6px;
-background:#0ea5e9;
-color:white;
-cursor:pointer;
-}
+padding:8px 14px;margin-left:6px;border:none;border-radius:6px;
+background:#0ea5e9;color:white;cursor:pointer}
 button:hover{background:#0284c7}
 
 .info{
-position:absolute;
-bottom:10px;
-left:50%;
-transform:translateX(-50%);
-background:#020617cc;
-padding:10px 20px;
-border-radius:10px;
-border:1px solid #334155;
-font-size:14px;
-color:#e5e7eb;
+position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+background:#020617cc;padding:10px 20px;border-radius:10px;
+border:1px solid #334155;font-size:14px;color:#e5e7eb;text-align:center;
 }
-
-/* ===== NEW LEGEND BOX (Only Added Part) ===== */
-.legend{
-position:fixed;
-bottom:15px;
-left:15px;
-background:#0f172acc;
-padding:12px 15px;
-border-radius:10px;
-border:1px solid #334155;
-font-size:12px;
-line-height:1.6;
-color:#e2e8f0;
-box-shadow:0 0 15px rgba(0,0,0,.5);
-}
-.legend b{color:#38bdf8}
 </style>
 </head>
 
 <body>
 
-<h1>Needham–Schroeder Authentication Protocol</h1>
+<h1>Suppress Replay Attack Protocol</h1>
 
 <div class="controls">
 <button onclick="sim.prev()">◀ Prev</button>
@@ -136,112 +67,95 @@ box-shadow:0 0 15px rgba(0,0,0,.5);
 </div>
 
 <div class="scene">
-<div id="alice" class="node">Alice<br><small>Initiator</small></div>
-<div id="kdc" class="node">KDC<br><small>Key Distribution Center</small></div>
-<div id="bob" class="node">Bob<br><small>Responder</small></div>
+<div id="alice" class="node">A (Alice)<br><small>Initiator</small></div>
+<div id="kdc" class="node">KDC<br><small>Trusted Server</small></div>
+<div id="bob" class="node">B (Bob)<br><small>Responder</small></div>
 
 <div id="packet" class="packet"></div>
 <div id="explain" class="explain"></div>
 <div id="info" class="info">Press Next ▶ to start</div>
 </div>
 
-<!-- ===== FULL FORM LEGEND (Only Added Part) ===== -->
-<div class="legend">
-<b>A, B</b> = USER<br>
-<b>KDC</b> = Key Distribution Center<br>
-<b>IDA/IDB</b> = Identity key shared between A and B<br>
-<b>KA</b> = Secret key shared between A and KDC<br>
-<b>KB</b> = Secret key shared between B and KDC<br>
-<b>KS</b> = Session key (Temporary)<br>
-<b>N1, N2</b> = Nonces (Random number)<br>
-<b>E</b> = Encryption
-</div>
-
 <script>
 class Simulator{
 constructor(){
 this.step=0;
+this.busy=false;
 this.packet=document.getElementById("packet");
 this.explain=document.getElementById("explain");
 this.info=document.getElementById("info");
 
 this.steps=[
-{info:"Alice and Bob want secure communication using a trusted server (KDC)."},
-{from:"alice",to:"kdc",msg:"IDA, IDB, N1",exp:"IDA/IDB = Identities | N1 = Random Nonce"},
-{from:"kdc",to:"alice",msg:"E(KA)[KS + Ticket]",exp:"KA = Alice↔KDC key | KS = Session Key"},
-{from:"alice",to:"bob",msg:"Ticket = E(KB)[KS]",exp:"KB = Bob↔KDC key"},
-{from:"bob",to:"alice",msg:"E(KS)[N2]",exp:"N2 = Bob's nonce"},
-{from:"alice",to:"bob",msg:"E(KS)[N2-1]",exp:"Authentication proof"},
-{info:"Secure session established. Communication now uses KS."}
+{info:"A and B want secure communication using KDC"},
+{from:"alice",to:"bob",msg:"IDA || NA",exp:"Alice sends ID and nonce NA"},
+{from:"bob",to:"kdc",msg:"IDB || NB || E(KB)[IDA, NA, TB]",exp:"Bob requests session with timestamp"},
+{from:"kdc",to:"alice",msg:"E(KA)[IDB, NA, KS, TB] + Ticket + NB",exp:"KDC generates session key KS"},
+{from:"alice",to:"bob",msg:"Ticket + E(KS)[NB]",exp:"Alice proves she knows KS"},
+{info:"Secure session established"},
+
+{info:"Future authentication without KDC"},
+{from:"alice",to:"bob",msg:"Old Ticket + NA2",exp:"Alice starts new session"},
+{from:"bob",to:"alice",msg:"NB2 + E(KS)[NA2]",exp:"Bob verifies ticket"},
+{from:"alice",to:"bob",msg:"E(KS)[NB2]",exp:"Mutual authentication complete"},
+{info:"Replay attacks prevented using nonces and timestamps"}
 ];
 }
 
-clearPacket(){
-this.packet.style.opacity=0;
-this.explain.style.opacity=0;
-}
-
-animate(from,to,label,exp){
+move(from,to,label,exp){
+this.busy=true;
 let f=document.getElementById(from).getBoundingClientRect();
 let t=document.getElementById(to).getBoundingClientRect();
 let p=this.packet,e=this.explain;
 
 p.innerText=label;
 e.innerText=exp;
-
 p.style.opacity=1;
 e.style.opacity=1;
 
-let start=null,duration=10000;
+let start=null,duration=8000;
 
-let run=(time)=>{
-if(!start)start=time;
+let anim=(time)=>{
+if(!start) start=time;
 let prog=Math.min((time-start)/duration,1);
 
 let x=f.left+(t.left-f.left)*prog;
 let y=f.top+(t.top-f.top)*prog;
-let depth=1+0.15*Math.sin(prog*Math.PI);
+let scale=1+0.2*Math.sin(prog*Math.PI);
 
 p.style.left=x+f.width/2+"px";
 p.style.top=y+f.height/2+"px";
-p.style.transform=`translate(-50%,-50%) scale(${depth})`;
+p.style.transform=`translate(-50%,-50%) scale(${scale})`;
 
 e.style.left=x+f.width/2+"px";
-e.style.top=y-35+"px";
+e.style.top=y-40+"px";
 
-if(prog<1)requestAnimationFrame(run);
+if(prog<1){
+requestAnimationFrame(anim);
+}else{
+setTimeout(()=>{
+p.style.opacity=0;
+e.style.opacity=0;
+this.busy=false;
+},1000);
+}
 };
-
-requestAnimationFrame(run);
+requestAnimationFrame(anim);
 }
 
 update(){
 let s=this.steps[this.step];
-if(s.info){this.info.innerText=s.info}
-if(s.from){this.animate(s.from,s.to,s.msg,s.exp)}
+
+if(s.info){
+this.info.innerText=s.info;
+return;
+}
+this.info.innerText=s.exp;
+this.move(s.from,s.to,s.msg,s.exp);
 }
 
-next(){
-if(this.step<this.steps.length-1){
-this.clearPacket();
-this.step++;
-this.update();
-}
-}
-
-prev(){
-if(this.step>0){
-this.clearPacket();
-this.step--;
-this.update();
-}
-}
-
-reset(){
-this.clearPacket();
-this.step=0;
-this.update();
-}
+next(){if(!this.busy && this.step<this.steps.length-1){this.step++;this.update()}}
+prev(){if(!this.busy && this.step>0){this.step--;this.update()}}
+reset(){if(!this.busy){this.step=0;this.update()}}
 }
 
 const sim=new Simulator();
